@@ -60,7 +60,7 @@ export const unbanUser = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   if (req.user && req.bearer == 'admin') {
-    const users = await userModel.find({role: 'member'});
+    const users = await userModel.find();
     if (users.length)
       return res.status(200).json({ message: "Users found", data: users });
     else

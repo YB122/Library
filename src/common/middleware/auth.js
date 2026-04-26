@@ -3,6 +3,7 @@ import { env } from "./../../../config/env.service.js";
 
 export const auth = (req, res, next) => {
   let { authorization } = req.headers;
+  console.log(authorization);
   if (!authorization) {
     return res.status(401).json({ message: "Login required" });
   }

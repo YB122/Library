@@ -65,7 +65,7 @@ export const returnBook = async (req, res) => {
     if (!transaction) {
       return res.status(400).json({ message: "failed to update transaction" });
     }
-    const bookUpdated = await bookModel.findByIdAndUpdate(transactionFound.bookId, { $inc: { availableCopies: 1 } , isActiveAvailableCopies: true }, { new: true });
+    const bookUpdated = await bookModel.findByIdAndUpdate(transactionFound.bookId, { $inc: { availableCopies: 1 }, isActiveAvailableCopies: true }, { new: true });
     if (!bookUpdated) {
       return res.status(400).json({ message: "failed to update book" });
     }
@@ -77,7 +77,7 @@ export const returnBook = async (req, res) => {
 
 export const getTransactionsUser = async (req, res) => {
   if (req.user && req.bearer == 'member') {
-    const transactions = await transactionModel.find({ user: req.user._id });
+    const transactions = await transactionModel.find({ userId: req.user._id });
     if (transactions.length) {
       return res.status(200).json({ message: "success", data: transactions });
     } else {
@@ -90,7 +90,7 @@ export const getTransactionsUser = async (req, res) => {
 
 export const getTransactionsAdmin = async (req, res) => {
   if (req.user && req.bearer == 'admin') {
-    const transactions = await transactionModel.find();
+    const transactions = await transactionModel.find().populate('userId').populate('bookId');
     if (transactions.length) {
       return res.status(200).json({ message: "success", data: transactions });
     } else {
@@ -102,4 +102,19 @@ export const getTransactionsAdmin = async (req, res) => {
 };
 
 
+export const getAllData = async (req, res) => {
+  if (req.user && req.bearer == 'admin') {
+    const transactions = await transactionModel.find().populate('userId').populate('bookId');
+    const books = await bookModel.find();
+    const users = await userModel.find();
+    let data = { transactions, books, users };
 
+    if (Object.keys(data).length) {
+      return res.status(200).json({ message: "success", data });
+    } else {
+      return res.status(404).json({ message: "no data found" });
+    }
+  } else {
+    return res.status(403).json({ message: "login first" });
+  }
+};

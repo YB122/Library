@@ -1,7 +1,8 @@
 import { bookModel } from "../../database/model/book.model.js";
 
 export const createBook = async (req, res) => {
-  if (req.user && req.user.role == "admin") {
+  console.log(req.user, req.bearer);
+  if (req.user && req.bearer == "admin") {
     const { title, author, description, rating, publishedYear, availableCopies, urlImage } = req.body;
     const bookFound = await bookModel.find({ title, author });
     if (bookFound.length)
@@ -26,12 +27,9 @@ export const createBook = async (req, res) => {
 };
 
 export const editBook = async (req, res) => {
-  if (req.user && req.user.role == "admin") {
+  if (req.user && req.bearer == "admin") {
     const { title, author, description, rating, publishedYear, availableCopies, urlImage } = req.body;
     const { id } = req.params;
-    const bookFound = await bookModel.find({ title, author });
-    if (bookFound.length)
-      return res.status(400).json({ message: "book already exists" });
     const book = await bookModel.findByIdAndUpdate(id, {
       title,
       author,
@@ -61,7 +59,7 @@ export const getBooks = async (req, res) => {
 };
 
 export const getBook = async (req, res) => {
-  if (req.user && req.user.role == "admin") {
+  if (req.user && req.bearer == "admin") {
     const { id } = req.params;
     const book = await bookModel.findById(id);
     if (book) {
@@ -74,7 +72,7 @@ export const getBook = async (req, res) => {
 };
 
 export const deleteBook = async (req, res) => {
-  if (req.user && req.user.role == "admin") {
+  if (req.user && req.bearer == "admin") {
     const { id } = req.params;
     const book = await bookModel.findByIdAndDelete(id, { new: true });
     if (book) {
