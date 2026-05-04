@@ -14,6 +14,10 @@ export const borrowBook = async (req, res) => {
     if (transactionFound) {
       return res.status(400).json({ message: "book is already borrowed" });
     }
+    const transactionMax = await transactionModel.countDocuments({ userId, status: "borrowed" });
+    if (transactionMax >= 3) {
+      return res.status(400).json({ message: "user has reached the maximum number of books" });
+    }
     if (!user.isActive) {
       return res.status(403).json({ message: "user is not active" });
     }
@@ -52,10 +56,10 @@ export const borrowBook = async (req, res) => {
 };
 
 export const returnBook = async (req, res) => {
-  if (req.user && req.bearer == 'member') {
+  if (req.user) {
     const { id } = req.params;
     const transactionFound = await transactionModel.findById(id);
-    if (!transactionFound || transactionFound.userId != req.user._id) {
+    if (!transactionFound) {
       return res.status(404).json({ message: "transaction not found" });
     }
     if (transactionFound.status != "borrowed") {

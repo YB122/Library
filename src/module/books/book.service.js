@@ -1,7 +1,6 @@
 import { bookModel } from "../../database/model/book.model.js";
 
 export const createBook = async (req, res) => {
-  console.log(req.user, req.bearer);
   if (req.user && req.bearer == "admin") {
     const { title, author, description, rating, publishedYear, availableCopies, urlImage } = req.body;
     const bookFound = await bookModel.find({ title, author });

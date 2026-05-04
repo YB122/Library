@@ -1,4 +1,6 @@
 import { userModel } from "../../database/model/user.model.js";
+import { transactionModel } from "../../database/model/transaction.model.js";
+import { bookModel } from "../../database/model/book.model.js";
 import bcrypt from "bcrypt";
 import { env } from "../../../config/env.service.js";
 import { generateToken } from "../../common/middleware/auth.js";
@@ -61,8 +63,23 @@ export const unbanUser = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   if (req.user && req.bearer == 'admin') {
     const users = await userModel.find();
-    if (users.length)
-      return res.status(200).json({ message: "Users found", data: users });
+
+    // For each user, get their transactions and books
+    const usersWithDetails = await Promise.all(
+      users.map(async (user) => {
+        const transactions = await transactionModel.find({ userId: user._id }).populate('bookId');
+        const books = transactions.map(transaction => transaction.bookId);
+
+        return {
+          ...user.toObject(),
+          transactions,
+          books
+        };
+      })
+    );
+
+    if (usersWithDetails.length)
+      return res.status(200).json({ message: "Users found", data: usersWithDetails });
     else
       return res.status(404).json({ message: "Users not found" });
   } else {

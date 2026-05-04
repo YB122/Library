@@ -20,7 +20,7 @@ const detectInjection = (value, helpers) => {
     if (typeof value !== "string") return value;
     const suspiciousPatterns = [
         /\$ne/i, /\$eq/i, /\$gt/i, /\$lt/i, /\$regex/i,
-        /--/, /;/, /DROP/i, /UNION/i, /SELECT/i, /INSERT/i, /UPDATE/i, /DELETE/i 
+        /--/, /;/, /DROP/i, /UNION/i, /SELECT/i, /INSERT/i, /UPDATE/i, /DELETE/i
     ];
     const isSuspicious = suspiciousPatterns.some(pattern => pattern.test(value));
     if (isSuspicious) {
@@ -35,7 +35,7 @@ const detectInjection = (value, helpers) => {
         if (logger && typeof logger.warn === 'function') {
             logger.warn(logMessage);
         } else {
-            console.log('[SECURITY_ALERT]', JSON.stringify(logMessage));
+            // Security alert logged silently
         }
         return helpers.error("string.injection", { value });
     }
