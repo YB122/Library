@@ -1,17 +1,20 @@
-import dns from "node:dns";
 import mongoose from "mongoose";
 import { env } from "../../config/env.service.js";
 
-dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
-
-export const dataBaseConnection = () => {
+export const dataBaseConnection = async () => {
   const options = {
-    serverSelectionTimeoutMS: 5000,
+    serverSelectionTimeoutMS: 30000,
     socketTimeoutMS: 45000,
+    maxPoolSize: 10,
+    bufferMaxEntries: 0,
+    bufferCommands: false,
   };
 
-  mongoose
-    .connect(env.databaseUrl, options)
-    .then(() => console.log("data base connected"))
-    .catch((err) => console.log("Database connection error:", err));
+  try {
+    await mongoose.connect(env.databaseUrl, options);
+    console.log("Database connected");
+  } catch (err) {
+    console.error('Database connection failed:', err.message);
+    throw err;
+  }
 };

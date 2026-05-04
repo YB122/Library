@@ -6,24 +6,34 @@ import usersRouter from "./module/users/user.controller.js";
 import booksRouter from "./module/books/book.controller.js";
 import transactionsRouter from "./module/transactions/transaction.controller.js";
 
-const app = express();
+const initializeApp = async () => {
+  const app = express();
 
-app.use(cors({
-  origin: "*",
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-}));
+  app.use(cors({
+    origin: "*",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  }));
 
-app.use(express.json());
+  app.use(express.json());
 
-dataBaseConnection();
+  try {
+    await dataBaseConnection();
+    console.log("Application initialized successfully");
+  } catch (error) {
+    console.error("Failed to initialize application:", error.message);
+    process.exit(1);
+  }
 
-app.use("/api/users", usersRouter);
-app.use("/api/books", booksRouter);
-app.use("/api/transactions", transactionsRouter);
+  app.use("/api/users", usersRouter);
+  app.use("/api/books", booksRouter);
+  app.use("/api/transactions", transactionsRouter);
 
-if (process.env.NODE_ENV != "production") {
-  app.listen(env.port, () => console.log(`Server running on port ${env.port}`));
-}
+  if (process.env.NODE_ENV != "production") {
+    app.listen(env.port, () => console.log(`Server running on port ${env.port}`));
+  }
 
-export default app;
+  return app;
+};
+
+export default await initializeApp();
