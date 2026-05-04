@@ -17,10 +17,34 @@ app.use(cors({
 
 app.use(express.json());
 
+// Database connection middleware
+const waitForDatabase = (req, res, next) => {
+  if (mongoose.connection.readyState === 1) {
+    next();
+  } else {
+    // Wait for connection or timeout after 5 seconds
+    const timeout = setTimeout(() => {
+      res.status(503).json({ error: "Database not available" });
+    }, 5000);
+
+    const checkConnection = () => {
+      if (mongoose.connection.readyState === 1) {
+        clearTimeout(timeout);
+        next();
+      } else {
+        setTimeout(checkConnection, 100);
+      }
+    };
+    checkConnection();
+  }
+};
+
 // Initialize database connection asynchronously
 dataBaseConnection().catch(err => {
   console.error("Failed to initialize database:", err.message);
 });
+
+app.use(waitForDatabase);
 
 app.use("/api/users", usersRouter);
 app.use("/api/books", booksRouter);
