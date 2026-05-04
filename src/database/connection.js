@@ -6,8 +6,6 @@ export const dataBaseConnection = async () => {
     serverSelectionTimeoutMS: 30000,
     socketTimeoutMS: 45000,
     maxPoolSize: 10,
-    bufferMaxEntries: 0,
-    bufferCommands: false,
   };
 
   try {
