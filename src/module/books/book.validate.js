@@ -19,3 +19,17 @@ export const editBookValidate = joi.object({
   description: joi.string().optional(),
   rating: joi.number().optional(),
 });
+
+export const createBulkBooksValidate = joi.object({
+  books: joi.array().items(
+    joi.object({
+      title: joi.string().required().min(1).max(200),
+      author: joi.string().required().min(1).max(100),
+      publishedYear: joi.number().required().integer().min(1000).max(new Date().getFullYear() + 1),
+      availableCopies: joi.number().optional().integer().min(0).default(1),
+      urlImage: joi.string().optional().uri().allow(""),
+      description: joi.string().required(),
+      rating: joi.number().required(),
+    })
+  ).min(1).required()
+});

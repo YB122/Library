@@ -148,3 +148,42 @@ export const unbanBook = async (req, res) => {
   }
 };
 
+export const createBulkBooks = async (req, res) => {
+  if (req.user && req.bearer == "admin") {
+    const { books } = req.body;
+
+    try {
+      const booksWithUserId = books.map(book => ({
+        ...book,
+        userId: req.user._id,
+      }));
+
+      const existingBooks = await bookModel.find({
+        $or: books.map(book => ({ title: book.title, author: book.author }))
+      });
+
+      if (existingBooks.length > 0) {
+        const existingTitles = existingBooks.map(book => `${book.title} by ${book.author}`);
+        return res.status(400).json({
+          message: "Some books already exist",
+          data: existingTitles
+        });
+      }
+
+      const createdBooks = await bookModel.insertMany(booksWithUserId);
+
+      return res.status(201).json({
+        message: `${createdBooks.length} books created successfully`,
+        data: createdBooks
+      });
+    } catch (error) {
+      return res.status(400).json({
+        message: "Failed to create books",
+        error: error.message
+      });
+    }
+  } else {
+    return res.status(403).json({ message: "for admin only" });
+  }
+};
+

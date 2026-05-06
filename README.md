@@ -99,10 +99,10 @@ The server will start at `http://localhost:3000`.
 
 ## API Overview
 
-| Module | Base Path | Key Endpoints |
-|--------|-----------|---------------|
-| Users | `/api/users` | register, login, get users, ban/unban |
-| Books | `/api/books` | CRUD, search, ban/unban |
+| Module       | Base Path           | Key Endpoints                               |
+| ------------ | ------------------- | ------------------------------------------- |
+| Users        | `/api/users`        | register, login, get users, ban/unban       |
+| Books        | `/api/books`        | CRUD, search, ban/unban                     |
 | Transactions | `/api/transactions` | borrow, return, get user/admin transactions |
 
 See [`API_ENDPOINTS.md`](API_ENDPOINTS.md) for complete request/response examples.
@@ -115,9 +115,24 @@ The project includes a `vercel.json` configuration for seamless deployment on [V
 
 ---
 
+## Project Links
+
+### Repository Links
+
+- **Backend API**: https://github.com/YB122/Library
+- **Admin Dashboard**: https://github.com/YB122/admin-library-react
+- **Frontend Library**: https://github.com/YB122/Alex-Library
+
+### Live Demos
+
+- **Admin Dashboard**: https://library-alex.vercel.app/
+- **Library Frontend**: https://alex-library-next.vercel.app/
+
+---
+
 ## Scripts
 
-| Script | Command | Description |
-|--------|---------|-------------|
-| `start` | `node ./src/main.js` | Run production server |
-| `dev` | `node --watch ./src/main.js` | Run development server with watch mode |
+| Script  | Command                      | Description                            |
+| ------- | ---------------------------- | -------------------------------------- |
+| `start` | `node ./src/main.js`         | Run production server                  |
+| `dev`   | `node --watch ./src/main.js` | Run development server with watch mode |
