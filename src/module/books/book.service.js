@@ -58,7 +58,7 @@ export const getBooks = async (req, res) => {
 };
 
 export const getBook = async (req, res) => {
-  if (req.user && req.bearer == "admin") {
+  if (req.user) {
     const { id } = req.params;
     const book = await bookModel.findById(id);
     if (book) {

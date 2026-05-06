@@ -81,7 +81,7 @@ export const returnBook = async (req, res) => {
 
 export const getTransactionsUser = async (req, res) => {
   if (req.user && req.bearer == 'member') {
-    const transactions = await transactionModel.find({ userId: req.user._id });
+    const transactions = await transactionModel.find({ userId: req.user._id }).populate('bookId', 'title author urlImage');
     if (transactions.length) {
       return res.status(200).json({ message: "success", data: transactions });
     } else {
